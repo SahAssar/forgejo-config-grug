@@ -1,0 +1,53 @@
+[database]
+DB_TYPE  = postgres
+HOST     = /run/postgresql/
+NAME     = forgejo
+USER     = forgejo
+PASSWD   =
+
+[server]
+START_SSH_SERVER = true
+SSH_DOMAIN       = git.${DOMAIN}
+SSH_PORT         = 2222
+DOMAIN           = git.${DOMAIN}
+ROOT_URL         = https://git.${DOMAIN}
+HTTP_ADDR        = 127.0.0.1
+HTTP_PORT        = 2223
+OFFLINE_MODE     = true
+
+[session]
+COOKIE_SECURE = true
+
+[service]
+DISABLE_REGISTRATION = true
+REQUIRE_SIGNIN_VIEW  = false
+ENABLE_NOTIFY_MAIL   = true
+
+[security]
+INSTALL_LOCK      = true
+DISABLE_GIT_HOOKS = false
+
+[repository]
+ENABLE_PUSH_CREATE_USER = true
+ENABLE_PUSH_CREATE_ORG  = true
+
+[repository.upload]
+FILE_MAX_SIZE = 5000
+
+[server]
+LFS_START_SERVER = true
+
+[indexer]
+REPO_INDEXER_ENABLED = true
+
+[mailer]
+ENABLED        = true
+FROM           = git@${DOMAIN}
+MAILER_TYPE    = smtp
+HOST           = smtp.${DOMAIN}:465
+IS_TLS_ENABLED = true
+USER           = git@${DOMAIN}
+PASSWD         = ${GIT_EMAIL_PASS}
+
+[oauth2]
+ENABLE = true

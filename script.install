@@ -1,0 +1,19 @@
+#!/bin/bash -e
+post_install() {
+	export $(cat /etc/secrets.env | xargs)
+	export GIT_EMAIL_PASS="$(tr -cd '[:alnum:]' < /dev/urandom | fold -w64 | head -n 1)"
+	[ -f "/etc/forgejo-config-grug/secrets.env" ] || (cat /etc/forgejo-config-grug/secrets.env.template | envsubst > /etc/forgejo-config-grug/secrets.env)
+	cat /etc/forgejo-config-grug/app.ini.template | envsubst > /etc/forgejo-config-grug/app.ini
+
+	# Create postgresql user/db
+	sudo -u postgres createuser forgejo
+	sudo -u postgres createdb forgejo --owner forgejo
+
+	# Create email user
+	maddyctl creds create git@${DOMAIN} --password $GIT_EMAIL_PASS
+	maddyctl imap-acct create git@${DOMAIN}
+
+	sudo -u forgejo forgejo --config /etc/forgejo-config-grug/app.ini migrate
+	sudo -u forgejo forgejo admin user create --admin --config /etc/forgejo-config-grug/app.ini --username admin --password $ADMIN_PASS --email admin@$DOMAIN
+	systemctl enable --now forgejo
+}
