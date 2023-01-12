@@ -13,7 +13,6 @@ provides=()
 conflicts=()
 install="script.install"
 package() {
-  cd ../
   depends+=(forgejo)
   depends+=(postgresql-config-grug)
   depends+=(server-config-grug)
